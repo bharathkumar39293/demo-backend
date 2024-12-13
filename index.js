@@ -4,7 +4,7 @@ const { open } = require('sqlite');
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcrypt');
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3003;
 
 const app = express();
 const dbPath = path.join(__dirname, 'goodreads.db');
