@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const { open } = require('sqlite');
 const sqlite3 = require('sqlite3');
+const bcrypt = require('bcrypt');
+
+const PORT = process.env.PORT || 3003;
 
 const app = express();
 const dbPath = path.join(__dirname, 'goodreads.db');
@@ -18,9 +21,11 @@ const initializeDBAndServer = async () => {
 
     // Insert 5 books after DB connection is established
     await insertBooks();
+    await createUserTable();
+    await insertUsers();
 
-    app.listen(3000, () => {
-      console.log('Server Running at http://localhost:3000/');
+    app.listen(PORT, () => {
+      console.log('Server Running at http://localhost:3003/');
     });
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
@@ -28,6 +33,41 @@ const initializeDBAndServer = async () => {
   }
 };
 
+//create user table
+const createUserTable = async() => {
+  const createUserTableQuery = `
+    CREATE TABLE IF NOT EXISTS user(
+       username TEXT NOT NULL,
+       name TEXT NOT NULL,
+       password TEXT NOT NULL,
+       gender TEXT NOT NULL,
+       location TEXT NOT NULL
+    );
+  `;
+  try{
+    await db.run(createUserTableQuery);
+    console.log("user table created");
+  } catch(err){
+    console.log("error creating table", err);
+  }
+};
+//insert users into the database
+const insertUsers = async() => {
+  const hashedPassword1 = await bcrypt.hash('12345', 10);
+  const hashedPassword2 = await bcrypt.hash('54321', 10);
+  try {
+    await db.run(`
+      INSERT INTO
+         user(username, name, password, gender, location)
+      VALUES
+       ('bharathkumar', 'bharath','${hashedPassword1}', 'male','india'),
+       ('ganeshkumar', 'ganesh','${hashedPassword2}', 'male','india');
+      `);
+    console.log("inserted users successfully")
+  } catch(err) {
+    console.log("Error inserting users:", err)
+  }
+}
 // Insert Books into the Database
 const insertBooks = async () => {
   try {
