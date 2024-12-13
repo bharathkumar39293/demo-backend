@@ -23,7 +23,7 @@ const initializeDBAndServer = async () => {
     // Insert 5 books after DB connection is established
     await insertBooks();
 
-    app.listen(3000, () => {
+    app.listen(PORT, () => {
       console.log('Server Running at http://localhost:3000/');
     });
   } catch (e) {
