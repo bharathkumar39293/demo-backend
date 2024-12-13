@@ -6,7 +6,11 @@ const sqlite3 = require('sqlite3');
 const app = express();
 const dbPath = path.join(__dirname, 'goodreads.db');
 
+const PORT = process.env.PORT || 3000;
+
 let db = null;
+
+
 
 // Initialize Database and Server
 const initializeDBAndServer = async () => {
